@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+<script src="http://d3js.org/d3-queue.v3.min.js"></script>
+<html>
+<style>
+
+.hidden {
+      display: none;
+}
+
+div.tooltip {
+     position: absolute;			
+    text-align: center;			
+    width: 80px;					
+    height: 60px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: red;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;
+}
+  </style>
+<body>
+
+<div>
+    <table align="center">
+        <tr>
+            <td>
+                <div id="option" align ="center">
+    <input name="updateButton" 
+           type="button" 
+           value="Bangladesh" 
+           onclick="updateData()" />
+</div>
+            </td>
+            <td>
+                <div id="option1">
+    <input name="updateButton" 
+           type="button" 
+           value="India" 
+           onclick="updateIData()" />
+</div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Create an element where the map will take place -->
+<svg id="my_dataviz" width="400" height="300"></svg>
+<script>
+
+
+// The svg
+var svg = d3.select("svg"),
+  width = +svg.attr("width"),
+  height = +svg.attr("height");
+
+// Map and projection
+var path = d3.geoPath();
+var projection = d3.geoMercator()
+  .scale(70)
+  .center([0,20])
+  .translate([width / 2, height / 2]);
+var i=0;
+// Data and color scale
+var data = d3.map();
+var colorScale = d3.scaleThreshold()
+  .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
+  .range(d3.schemeBlues[7]);
+var tooltip = d3.select("div.tooltip");
+// Load external data and boot
+var q=d3.queue()
+  .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+   .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function(d) { data.set(d.code, +d.pop); })
+  .await(ready);
+
+function ready(error, topo) {
+//console.log(topo.features);
+  // Draw the map
+
+  svg.append("g")
+    .selectAll("path")
+    .data(topo.features)
+    .enter()
+    .append("path")
+      // draw each country
+      .attr("d", d3.geoPath()
+        .projection(projection)
+      )
+      // set the color of each country
+      .attr("fill", function (d) {
+        d.total = data.get(d.id) || 000000;
+        return colorScale(d.total);
+      }).on("mouseover",function(d,i){console.log(d.id);
+                tooltip.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            	 tooltip.html( d.id + "%")	
+                .style("left", (d3.event.pageX ) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout",function(d,i){tooltip.transition()		
+                .duration(200)		
+                .style("opacity", 0);});
+    }
+
+function updateData() {
+svg.select("text").remove();
+var q1=d3.queue()
+   .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function(d) { data.set(d.code, +d.pop);disp(d);})
+function disp(d) {
+if (d.code =="BGD"){
+svg.append("text")
+     // .attr("transform", "translate(250,280)")
+      .attr("y", 250)
+      .attr("x", 280)
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Population of Bangladesh: "+ d.pop );   }
+
+}
+}
+function updateIData() {
+svg.select("text").remove();
+var q1=d3.queue()
+   .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function(d) { data.set(d.code, +d.pop);disp(d);})
+function disp(d) {
+if (d.code =="IND"){
+svg.append("text")
+     // .attr("transform", "translate(250,280)")
+      .attr("y", 250)
+      .attr("x", 280)
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Population of India: "+ d.pop );   }
+
+}
+
+}
+
+</script>
+<div id='yourDivId1'><h4> The Map of World Population in 2016</h4></div>
+</body>
+</html>
