@@ -120,7 +120,7 @@ window.open("https://en.wikipedia.org/wiki/India");
 
 async function init() {
  data = await d3.csv("./D3_literacy_1.csv");
-
+window.alert("Please select countries form drop down list. Hover mouse on data point for more details");
 var group = d3.select("svg").append("g").attr("transform","translate(50,50)");
 var xScale = d3.scaleLinear().domain([1960,2016]).range([0, 600]);
 var yScale = d3.scaleLinear().domain([0,100]).range([550, 0]);
@@ -304,7 +304,7 @@ d3.select('#inds').on("change", function () {
 				{
 					var d2=  updateBangLineChart(section);
 					console.log(d2);
-					window.alert("Please select countries form drop down list. Hover mouse on data point for more details");
+					
 				}
 				else if (section=="India")
 				{
