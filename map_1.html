@@ -7,6 +7,7 @@
 <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 <script src="http://d3js.org/d3-queue.v3.min.js"></script>
 <html>
+<head><title>"The Population map page2"</title></head>
 <style>
 
 .hidden {
@@ -25,8 +26,31 @@ div.tooltip {
     border-radius: 8px;			
     pointer-events: none;
 }
+
+.btn {
+  border: none;
+  outline: none;
+  padding: 10px 16px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+
+.active, .btn:hover {
+  background-color: #666;
+  color: white;
+}
   </style>
 <body>
+
+</div>
+<div id="myDIV">
+  <button class="btn">1</button>
+  <button class="btn active">2</button>
+  <button class="btn">3</button>
+  <button class="btn">4</button>
+  <button class="btn">5</button>
+</div>
 
 <div>
     <table align="center">
@@ -54,8 +78,23 @@ div.tooltip {
 <!-- Create an element where the map will take place -->
 <svg id="my_dataviz" width="400" height="300"></svg>
 <script>
-
-
+var btnContainer = document.getElementById("myDIV");
+var btns = btnContainer.getElementsByClassName("btn");
+var cnt=0;
+for (var i = 0; i < 5; i++) {
+  btns[i].addEventListener("click", function() {
+    var current = document.getElementsByClassName("active");
+    current[0].className = current[0].className.replace(" active", "");
+    this.className += " active";
+cnt+=1;
+console.log(cnt);
+if (cnt==5)
+{cnt=0}
+     if (cnt==1)
+	{ window.open("./Literacy_Rate.html");
+	}
+  });
+}
 // The svg
 var svg = d3.select("svg"),
   width = +svg.attr("width"),
@@ -146,5 +185,6 @@ svg.append("text")
 
 </script>
 <div id='yourDivId1'><h4> The Map of World Population in 2016</h4></div>
+<Button  type="button" href="C:/Users/Ankit/Documents/D3/test_button_3.html">Back</button>
 </body>
 </html>
